@@ -456,7 +456,12 @@
             { key: 'helix', emoji: '🧬', name: '双螺旋' },
             { key: 'cone', emoji: '🔺', name: '圆锥' },
             { key: 'octahedron', emoji: '💠', name: '八面体' },
-            { key: 'torusspiral', emoji: '🌀', name: '环面螺旋' }
+            { key: 'torusspiral', emoji: '🌀', name: '环面螺旋' },
+            { key: 'number1', emoji: '1️⃣', name: '数字1' },
+            { key: 'number2', emoji: '2️⃣', name: '数字2' },
+            { key: 'number3', emoji: '3️⃣', name: '数字3' },
+            { key: 'number4', emoji: '4️⃣', name: '数字4' },
+            { key: 'iLoveYou', emoji: '💕', name: '我爱你' }
         ];
 
         // ---------- 全局状态 ----------
@@ -660,7 +665,282 @@
             helix: n => { const h = 3.2, r = 1.0, coils = 3; return Array.from({ length: n }, () => { const t = Math.random(); const a = t * Math.PI * 2 * coils; const offset = (Math.random() - 0.5) * 0.3; return { x: (r + offset) * Math.cos(a), y: (t - 0.5) * h, z: (r + offset) * Math.sin(a) }; }); },
             cone: n => { const h = 2.5, base = 1.5; return Array.from({ length: n }, () => { const y = Math.random() * h; const mr = base * (1 - y / h); const a = Math.random() * Math.PI * 2; return { x: Math.random() * mr * Math.cos(a), y: y - h / 2, z: Math.random() * mr * Math.sin(a) }; }); },
             octahedron: n => { const s = 1.5; return Array.from({ length: n }, () => { const face = Math.floor(Math.random() * 8); let x, y, z; if (face < 4) { x = (Math.random() - 0.5) * s; z = (Math.random() - 0.5) * s; y = s - Math.abs(x) - Math.abs(z); } else { x = (Math.random() - 0.5) * s; z = (Math.random() - 0.5) * s; y = -s + Math.abs(x) + Math.abs(z); } return { x, y, z }; }); },
-            torusspiral: n => { const R = 1.4, r = 0.45, turns = 8; return Array.from({ length: n }, () => { const t = Math.random() * Math.PI * 2 * turns; const phi = t; return { x: (R + r * Math.cos(phi)) * Math.cos(t), y: (R + r * Math.cos(phi)) * Math.sin(t), z: r * Math.sin(phi) }; }); }
+            torusspiral: n => { const R = 1.4, r = 0.45, turns = 8; return Array.from({ length: n }, () => { const t = Math.random() * Math.PI * 2 * turns; const phi = t; return { x: (R + r * Math.cos(phi)) * Math.cos(t), y: (R + r * Math.cos(phi)) * Math.sin(t), z: r * Math.sin(phi) }; }); },
+            
+            // 数字1 - 简洁的竖线形状
+            number1: n => {
+                const p = [];
+                const height = 2.5;
+                const thickness = 0.12;
+                for (let i = 0; i < n; i++) {
+                    const y = (Math.random() - 0.5) * height;
+                    p.push({
+                        x: (Math.random() - 0.5) * thickness,
+                        y: y,
+                        z: (Math.random() - 0.5) * thickness
+                    });
+                }
+                // 添加顶部的斜线装饰
+                const topCount = Math.floor(n * 0.15);
+                for (let i = 0; i < topCount; i++) {
+                    const t = Math.random();
+                    p.push({
+                        x: -0.3 + t * 0.6,
+                        y: height / 2 - t * 0.5,
+                        z: (Math.random() - 0.5) * thickness
+                    });
+                }
+                return p;
+            },
+            
+            // 数字2 - 带弯曲的形状
+            number2: n => {
+                const p = [];
+                const topY = 1.0;
+                const bottomY = -1.0;
+                const width = 1.2;
+                
+                // 上半圆弧部分
+                const arcCount = Math.floor(n * 0.4);
+                for (let i = 0; i < arcCount; i++) {
+                    const angle = Math.random() * Math.PI;
+                    const r = width * 0.5;
+                    p.push({
+                        x: Math.cos(angle) * r,
+                        y: topY - Math.sin(angle) * r * 0.5,
+                        z: (Math.random() - 0.5) * 0.1
+                    });
+                }
+                
+                // 底部对角线和水平线
+                const lineCount = n - arcCount;
+                for (let i = 0; i < lineCount; i++) {
+                    const t = Math.random();
+                    if (t < 0.4) {
+                        // 对角线
+                        const s = Math.random();
+                        p.push({
+                            x: (0.5 - s) * width,
+                            y: topY - s * 2.0 * (topY - bottomY),
+                            z: (Math.random() - 0.5) * 0.1
+                        });
+                    } else {
+                        // 水平线
+                        p.push({
+                            x: (Math.random() - 0.5) * width,
+                            y: bottomY,
+                            z: (Math.random() - 0.5) * 0.1
+                        });
+                    }
+                }
+                return p;
+            },
+            
+            // 数字3 - 两个半圆
+            number3: n => {
+                const p = [];
+                const topY = 1.0;
+                const midY = 0;
+                const bottomY = -1.0;
+                const width = 1.0;
+                const radius = 0.4;
+                
+                // 上半圆
+                const topCount = Math.floor(n * 0.45);
+                for (let i = 0; i < topCount; i++) {
+                    const angle = Math.random() * Math.PI;
+                    p.push({
+                        x: Math.cos(angle) * radius + radius * 0.5,
+                        y: midY + radius * Math.sin(angle),
+                        z: (Math.random() - 0.5) * 0.1
+                    });
+                }
+                
+                // 下半圆
+                const bottomCount = n - topCount;
+                for (let i = 0; i < bottomCount; i++) {
+                    const angle = Math.random() * Math.PI;
+                    p.push({
+                        x: Math.cos(angle) * radius + radius * 0.5,
+                        y: midY - radius * Math.sin(angle),
+                        z: (Math.random() - 0.5) * 0.1
+                    });
+                }
+                return p;
+            },
+            
+            // 数字4 - 竖线和横线
+            number4: n => {
+                const p = [];
+                const height = 2.2;
+                const width = 1.4;
+                const midY = 0;
+                
+                // 竖线
+                const vertCount = Math.floor(n * 0.35);
+                for (let i = 0; i < vertCount; i++) {
+                    const y = (Math.random() - 0.5) * height;
+                    p.push({
+                        x: width * 0.5,
+                        y: y,
+                        z: (Math.random() - 0.5) * 0.1
+                    });
+                }
+                
+                // 横线
+                const horizCount = Math.floor(n * 0.25);
+                for (let i = 0; i < horizCount; i++) {
+                    p.push({
+                        x: (Math.random() - 0.5) * width,
+                        y: midY,
+                        z: (Math.random() - 0.5) * 0.1
+                    });
+                }
+                
+                // 斜线
+                const diagCount = n - vertCount - horizCount;
+                for (let i = 0; i < diagCount; i++) {
+                    const t = Math.random();
+                    p.push({
+                        x: -width * 0.5 + t * width,
+                        y: height * 0.5 - t * (height * 0.5 - midY),
+                        z: (Math.random() - 0.5) * 0.1
+                    });
+                }
+                return p;
+            },
+            
+            // I LOVE YOU - 文字粒子效果
+            iLoveYou: n => {
+                const p = [];
+                const textHeight = 1.8;
+                const charWidth = 0.35;
+                const spacing = 0.15;
+                
+                // "I" - 竖线
+                const iCount = Math.floor(n * 0.08);
+                for (let i = 0; i < iCount; i++) {
+                    const y = (Math.random() - 0.5) * textHeight;
+                    p.push({
+                        x: -3.5 * charWidth + (Math.random() - 0.5) * 0.08,
+                        y: y,
+                        z: (Math.random() - 0.5) * 0.05
+                    });
+                }
+                
+                // "LOVE" - 四个字母
+                const loveChars = ['L', 'O', 'V', 'E'];
+                const startX = -2.5 * charWidth;
+                
+                for (let c = 0; c < loveChars.length; c++) {
+                    const charX = startX + c * (charWidth + spacing);
+                    const charCount = Math.floor(n * 0.18);
+                    
+                    for (let i = 0; i < charCount; i++) {
+                        const char = loveChars[c];
+                        let x, y;
+                        
+                        if (char === 'L') {
+                            // L 形状
+                            if (Math.random() < 0.6) {
+                                y = (Math.random() - 0.5) * textHeight;
+                                x = charX;
+                            } else {
+                                x = charX + (Math.random() - 0.5) * charWidth;
+                                y = -textHeight * 0.5;
+                            }
+                        } else if (char === 'O') {
+                            // O 圆形
+                            const angle = Math.random() * Math.PI * 2;
+                            const r = charWidth * 0.45;
+                            x = charX + Math.cos(angle) * r;
+                            y = Math.sin(angle) * r;
+                        } else if (char === 'V') {
+                            // V 形状
+                            const t = Math.random();
+                            x = charX + (t - 0.5) * charWidth;
+                            y = (t < 0.5 ? t : 1 - t) * 2 * textHeight * 0.5 - textHeight * 0.2;
+                        } else if (char === 'E') {
+                            // E 形状
+                            const part = Math.random();
+                            if (part < 0.3) {
+                                x = charX;
+                                y = (Math.random() - 0.5) * textHeight;
+                            } else if (part < 0.5) {
+                                x = charX;
+                                y = -textHeight * 0.5;
+                            } else if (part < 0.7) {
+                                x = charX;
+                                y = 0;
+                            } else if (part < 0.85) {
+                                x = charX;
+                                y = textHeight * 0.5;
+                            } else {
+                                x = charX + (Math.random() - 0.5) * charWidth;
+                                y = textHeight * 0.5;
+                            }
+                        }
+                        
+                        p.push({
+                            x: x + (Math.random() - 0.5) * 0.03,
+                            y: y + (Math.random() - 0.5) * 0.03,
+                            z: (Math.random() - 0.5) * 0.05
+                        });
+                    }
+                }
+                
+                // "YOU" - 三个字母
+                const youChars = ['Y', 'O', 'U'];
+                const startX2 = 1.5 * charWidth;
+                
+                for (let c = 0; c < youChars.length; c++) {
+                    const charX = startX2 + c * (charWidth + spacing);
+                    const charCount = Math.floor(n * 0.16);
+                    
+                    for (let i = 0; i < charCount; i++) {
+                        const char = youChars[c];
+                        let x, y;
+                        
+                        if (char === 'Y') {
+                            // Y 形状
+                            const part = Math.random();
+                            if (part < 0.5) {
+                                const t = Math.random();
+                                x = charX + (t - 0.5) * charWidth * 0.5;
+                                y = textHeight * 0.5 - t * textHeight * 0.25;
+                            } else {
+                                const t = Math.random();
+                                x = charX + (t - 0.5) * charWidth * 0.5;
+                                y = textHeight * 0.25 - t * textHeight * 0.5;
+                            }
+                        } else if (char === 'O') {
+                            // O 圆形
+                            const angle = Math.random() * Math.PI * 2;
+                            const r = charWidth * 0.45;
+                            x = charX + Math.cos(angle) * r;
+                            y = Math.sin(angle) * r;
+                        } else if (char === 'U') {
+                            // U 形状
+                            const angle = Math.random() * Math.PI;
+                            if (angle < Math.PI * 0.3 || angle > Math.PI * 0.7) {
+                                x = charX + Math.cos(angle) * charWidth * 0.45;
+                                y = Math.sin(angle) * textHeight * 0.5;
+                            } else {
+                                x = charX + (Math.random() - 0.5) * charWidth * 0.9;
+                                y = textHeight * 0.5;
+                            }
+                        }
+                        
+                        p.push({
+                            x: x + (Math.random() - 0.5) * 0.03,
+                            y: y + (Math.random() - 0.5) * 0.03,
+                            z: (Math.random() - 0.5) * 0.05
+                        });
+                    }
+                }
+                
+                return p;
+            }
         };
 
         function generateShape(key, count) {
@@ -795,6 +1075,63 @@
             gestureText.textContent = text;
         }
 
+        // 手指数量检测函数
+        function countFingers(lm) {
+            let count = 0;
+            
+            // 拇指：检测是否向外展开
+            const thumbTip = lm[4];
+            const thumbIP = lm[3];
+            const thumbExtended = Math.abs(thumbTip.x - lm[0].x) > Math.abs(thumbIP.x - lm[0].x);
+            if (thumbExtended) count++;
+            
+            // 食指
+            const indexTip = lm[8];
+            const indexPIP = lm[6];
+            if (indexTip.y < indexPIP.y) count++;
+            
+            // 中指
+            const middleTip = lm[12];
+            const middlePIP = lm[10];
+            if (middleTip.y < middlePIP.y) count++;
+            
+            // 无名指
+            const ringTip = lm[16];
+            const ringPIP = lm[14];
+            if (ringTip.y < ringPIP.y) count++;
+            
+            // 小指
+            const pinkyTip = lm[20];
+            const pinkyPIP = lm[18];
+            if (pinkyTip.y < pinkyPIP.y) count++;
+            
+            return count;
+        }
+
+        // 手势数字处理函数
+        let lastFingerCount = 0;
+        let lastGestureChangeTime = 0;
+        const gestureCooldown = 1500;
+
+        function handleFingerCount(count) {
+            const now = performance.now();
+            
+            // 只在检测到1-5且与上次不同时处理
+            if (count >= 1 && count <= 5 && count !== lastFingerCount && now - lastGestureChangeTime > gestureCooldown) {
+                lastFingerCount = count;
+                lastGestureChangeTime = now;
+                
+                // 根据手指数量切换到对应的数字形状
+                const numberShapes = ['number1', 'number2', 'number3', 'number4', 'iLoveYou'];
+                if (count >= 1 && count <= 5) {
+                    switchShape(numberShapes[count - 1]);
+                    updateGestureUI('', `数字 ${count}`);
+                }
+            } else if (count === 0) {
+                lastFingerCount = 0;
+            }
+        }
+
         async function detectHands() {
             if (!cameraReady || !handLandmarker || detecting) return;
             if (cameraPreview.readyState < 2) return;
@@ -818,6 +1155,10 @@
                     });
                     avg /= 5;
                     targetHandOpenness = Math.max(0, Math.min(1, (dTP * 2.3 + avg * 1.7) / 2.2));
+                    
+                    // 手指数量检测
+                    const fingerCount = countFingers(lm);
+                    handleFingerCount(fingerCount);
                     
                     // 滑动检测：使用手腕位置
                     const handCenter = { x: wrist.x, y: wrist.y, time: now };
